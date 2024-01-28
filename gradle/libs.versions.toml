@@ -1,0 +1,9 @@
+[versions]
+kotlin = "1.9.22"
+
+[libraries]
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+
+[plugins]
+gradle-publish-plugin = { id = "com.gradle.plugin-publish", version = "1.2.1" }
+artifactregistry = { id = "com.google.cloud.artifactregistry.gradle-plugin", version = "2.2.1" }
