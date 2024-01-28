@@ -31,9 +31,7 @@ fun Project.applyMultiplatformHelpers() {
             publishTasks("Common", KotlinJvmTarget::class, KotlinJsTarget::class, KotlinMetadataTarget::class)
             publishTasks<KotlinNativeTarget>("Linux") { konanTarget.family == Family.LINUX }
             publishTasks<KotlinNativeTarget>("Windows") { konanTarget.family == Family.MINGW }
-            publishTasks<KotlinNativeTarget>("Apple") {
-                konanTarget.family in darwinFamilies
-            }
+            publishTasks<KotlinNativeTarget>("Apple") { konanTarget.family in darwinFamilies }
 
             val commonHost = kordExtension.commonHost.get()
             umbrellaTask(commonHost, "Publishes all publications designated to this hosts OS")
