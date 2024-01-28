@@ -19,4 +19,4 @@ internal fun ExtensionAware.createKordExtension() = extensions.create<KordExtens
     commonHost.convention(KonanTarget.LINUX_X64)
 }
 
-internal val ExtensionAware.kord get()=extensions.getByName<KordExtension>("kord")
+internal val ExtensionAware.kord get() = extensions.getByName<KordExtension>("kord")
