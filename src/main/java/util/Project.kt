@@ -10,7 +10,8 @@ private val Project.tag
 
 val Project.libraryVersion
     get() = tag ?: run {
-        val snapshotPrefix = when (val branch = git("branch", "--show-current")) {
+        val envBranch = System.getenv("GIT_BRANCH")?.substringAfter("refs/heads/")
+        val snapshotPrefix = when (val branch = envBranch ?: git("branch", "--show-current")) {
             "main" -> providers.gradleProperty("nextPlannedVersion").orNull
                 ?: error("Please set nextPlannedVersion in gradle.properties")
 
