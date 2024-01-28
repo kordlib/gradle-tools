@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "dev.kord"
-version = "1.0-SNAPSHOT"
+version = "1.0.8"
 
 repositories {
     mavenCentral()
@@ -43,17 +43,17 @@ gradlePlugin {
 publishing {
     repositories {
         maven("artifactregistry://europe-west3-maven.pkg.dev/mik-music/kord") {
-            credentials {
-                username = "_json_key_base64"
-                password = System.getenv("GOOGLE_KEY")?.toByteArray()?.let {
-                    @OptIn(ExperimentalEncodingApi::class)
-                    Base64.encode(it)
-                }
-            }
-
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
+//            credentials {
+//                username = "_json_key_base64"
+//                password = System.getenv("GOOGLE_KEY")?.toByteArray()?.let {
+//                    @OptIn(ExperimentalEncodingApi::class)
+//                    Base64.encode(it)
+//                }
+//            }
+//
+//            authentication {
+//                create<BasicAuthentication>("basic")
+//            }
         }
     }
 }
