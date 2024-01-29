@@ -10,7 +10,7 @@ It is currently not designed to be used in other projects
 
 This plugin reads the current version from git, according to the following rules
 
-1. Use the current tage name if possible
+1. Use the current tag name if possible
 2. If the current branch is `main` use `{nextPlannedVersion}-SNAPSHOT` from `gradle.properties`
 3. Otherwise, use `{branch}-SNAPSHOT` whilst replacing `/` with `-`
 
