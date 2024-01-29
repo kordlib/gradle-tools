@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMetadataTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
+import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.HostManager
@@ -28,7 +29,7 @@ fun Project.applyMultiplatformHelpers() {
     val kordExtension = kord
     afterEvaluate {
         with(extensions.getByName<KotlinMultiplatformExtension>("kotlin")) {
-            publishTasks("Common", KotlinJvmTarget::class, KotlinJsTarget::class, KotlinMetadataTarget::class)
+            publishTasks("Common", KotlinJvmTarget::class, KotlinJsTarget::class, KotlinJsIrTarget::class, KotlinMetadataTarget::class)
             publishTasks<KotlinNativeTarget>("Linux") { konanTarget.family == Family.LINUX }
             publishTasks<KotlinNativeTarget>("Windows") { konanTarget.family == Family.MINGW }
             publishTasks<KotlinNativeTarget>("Apple") { konanTarget.family in darwinFamilies }
@@ -105,11 +106,12 @@ private fun KotlinMultiplatformExtension.publishTasks(
         .map { targetName -> targetName.replaceFirstChar { it.uppercaseChar() } }
         .map { if (it == "Metadata") "KotlinMultiplatform" else it }
         .toList()
+    val publication = project.kord.publicationName.get().replaceFirstChar { it.uppercaseChar() }
     if (targetNames.any()) {
         tasks.register("publish$name") {
             description = "Publishes all $name targets"
             group = PublishingPlugin.PUBLISH_TASK_GROUP
-            dependsOn(targetNames.map { "publish${it}PublicationToMavenCentralRepository" })
+            dependsOn(targetNames.map { "publish${it}PublicationTo${publication}Repository" })
         }
         tasks.register("publish${name}ToMavenLocal") {
             description = "Publishes all $name targets to Maven local"

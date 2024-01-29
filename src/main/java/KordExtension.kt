@@ -13,10 +13,18 @@ interface KordExtension {
      * Defaults to [KonanTarget.LINUX_X64]
      */
     val commonHost: Property<KonanTarget>
+
+    /**
+     * The name of the publication to publish.
+     *
+     * Defaults to `maven`
+     */
+    val publicationName: Property<String>
 }
 
 internal fun ExtensionAware.createKordExtension() = extensions.create<KordExtension>("kord").apply {
     commonHost.convention(KonanTarget.LINUX_X64)
+    publicationName.convention("maven")
 }
 
 internal val ExtensionAware.kord get() = extensions.getByName<KordExtension>("kord")
