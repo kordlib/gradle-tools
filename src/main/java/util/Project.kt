@@ -1,5 +1,6 @@
 package dev.kord.gradle.tools.util
 
+import dev.kord.gradle.tools.kord
 import org.gradle.api.Project
 
 private val Project.tag
@@ -12,7 +13,7 @@ val Project.libraryVersion
     get() = tag ?: run {
         val envBranch = System.getenv("GIT_BRANCH")?.substringAfter("refs/heads/")
         val snapshotPrefix = when (val branch = envBranch ?: git("branch", "--show-current")) {
-            "main" -> providers.gradleProperty("nextPlannedVersion").orNull
+            kord.mainBranchName.get() -> providers.gradleProperty("nextPlannedVersion").orNull
                 ?: error("Please set nextPlannedVersion in gradle.properties")
 
             else -> branch.replace('/', '-')
