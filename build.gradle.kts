@@ -28,7 +28,7 @@ gradlePlugin {
     vcsUrl = "https://github.com/kordlib/gradle-tools.git"
 
     plugins {
-        create("greetingsPlugin") {
+        create("kordGradleToolsPlugin") {
             id = "dev.kord.gradle-tools"
             displayName = "Kord Gradle Tools"
             description = "Tools for maintaining Kord projects"
