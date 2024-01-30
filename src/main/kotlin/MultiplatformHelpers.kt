@@ -151,7 +151,7 @@ private fun KotlinMultiplatformExtension.publishTasks(
             .flatMap { target -> target.testRuns.names.map { "${target.targetName}Test" } }
 
         tasks.register("test${name}") {
-            group = LifecycleBasePlugin.CHECK_TASK_NAME
+            group = LifecycleBasePlugin.VERIFICATION_GROUP
             description = "Runs tests on all $name targets"
             dependsOn(testRuns.toList())
         }
