@@ -29,10 +29,10 @@ fun Project.applyMultiplatformHelpers() {
     val kordExtension = kord
     afterEvaluate {
         with(extensions.getByName<KotlinMultiplatformExtension>("kotlin")) {
-            publishTasks("Common", KotlinJvmTarget::class, KotlinJsTarget::class, KotlinJsIrTarget::class)
-            publishTasks<KotlinNativeTarget>("Linux") { konanTarget.family == Family.LINUX }
-            publishTasks<KotlinNativeTarget>("Windows") { konanTarget.family == Family.MINGW }
-            publishTasks<KotlinNativeTarget>("Apple") { konanTarget.family in darwinFamilies }
+            publishAndTestTasks("Common", KotlinJvmTarget::class, KotlinJsTarget::class, KotlinJsIrTarget::class)
+            publishAndTestTasks<KotlinNativeTarget>("Linux") { konanTarget.family == Family.LINUX }
+            publishAndTestTasks<KotlinNativeTarget>("Windows") { konanTarget.family == Family.MINGW }
+            publishAndTestTasks<KotlinNativeTarget>("Apple") { konanTarget.family in darwinFamilies }
 
             val commonHost = kordExtension.commonHost.get()
             val metadataHost = kordExtension.metadataHost.get()
@@ -110,15 +110,15 @@ private fun Project.umbrellaTask(
 }
 
 context(Project)
-private inline fun <reified T : KotlinTarget> KotlinMultiplatformExtension.publishTasks(
+private inline fun <reified T : KotlinTarget> KotlinMultiplatformExtension.publishAndTestTasks(
     name: String,
     crossinline filter: T.() -> Boolean
-) = publishTasks(name, T::class) {
+) = publishAndTestTasks(name, T::class) {
     (this as T).filter()
 }
 
 context(Project)
-private fun KotlinMultiplatformExtension.publishTasks(
+private fun KotlinMultiplatformExtension.publishAndTestTasks(
     name: String,
     vararg desiredTargets: KClass<out KotlinTarget>,
     filter: KotlinTarget.() -> Boolean = { true }
@@ -132,7 +132,7 @@ private fun KotlinMultiplatformExtension.publishTasks(
         .map { if (it == "Metadata") "KotlinMultiplatform" else it }
         .toList()
     val publication = project.kord.publicationName.get().replaceFirstChar { it.uppercaseChar() }
-    if (targetNames.any()) {
+    if (targetNames.isNotEmpty()) {
         tasks.register("publish$name") {
             description = "Publishes all $name targets"
             group = PublishingPlugin.PUBLISH_TASK_GROUP
