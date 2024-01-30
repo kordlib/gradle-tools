@@ -53,7 +53,7 @@ fun Project.applyMultiplatformHelpers() {
 
             tasks.register("testOnCurrentOS") {
 
-                group = LifecycleBasePlugin.CHECK_TASK_NAME
+                group = LifecycleBasePlugin.VERIFICATION_GROUP
                 description = "Runs all tests for this OS"
                 if (commonHost.isCurrent()) {
                     dependOnSafe("testCommon")
