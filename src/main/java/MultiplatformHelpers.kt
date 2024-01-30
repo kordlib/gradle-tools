@@ -2,13 +2,13 @@ package dev.kord.gradle.tools
 
 import dev.kord.gradle.tools.util.isCurrent
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.publish.plugins.PublishingPlugin
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMetadataTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
@@ -29,17 +29,27 @@ fun Project.applyMultiplatformHelpers() {
     val kordExtension = kord
     afterEvaluate {
         with(extensions.getByName<KotlinMultiplatformExtension>("kotlin")) {
-            publishTasks("Common", KotlinJvmTarget::class, KotlinJsTarget::class, KotlinJsIrTarget::class, KotlinMetadataTarget::class)
+            publishTasks("Common", KotlinJvmTarget::class, KotlinJsTarget::class, KotlinJsIrTarget::class)
             publishTasks<KotlinNativeTarget>("Linux") { konanTarget.family == Family.LINUX }
             publishTasks<KotlinNativeTarget>("Windows") { konanTarget.family == Family.MINGW }
             publishTasks<KotlinNativeTarget>("Apple") { konanTarget.family in darwinFamilies }
 
             val commonHost = kordExtension.commonHost.get()
-            umbrellaTask(commonHost, "Publishes all publications designated to this hosts OS")
+            val metadataHost = kordExtension.metadataHost.get()
+            umbrellaTask(commonHost, "Publishes all publications designated to this hosts OS") {
+                if (metadataHost.isCurrent()) {
+                    val publicationName = kordExtension.publicationName.get().replaceFirstChar { it.uppercaseChar() }
+                    dependsOn("publishKotlinMultiplatformPublicationTo${publicationName}Repository")
+                }
+            }
             umbrellaTask(
                 commonHost, "Publishes all publications designated to this hosts OS to Maven local",
                 "ToMavenLocal"
-            )
+            ) {
+                if (metadataHost.isCurrent()) {
+                    dependsOn("publishKotlinMultiplatformPublicationToMavenLocal")
+                }
+            }
 
             tasks.register("testOnCurrentOS") {
                 group = LifecycleBasePlugin.CHECK_TASK_NAME
@@ -64,13 +74,20 @@ fun Project.applyMultiplatformHelpers() {
 }
 
 context(Project)
-private fun Project.umbrellaTask(commonHost: KonanTarget, description: String, suffix: String = "") {
+private fun Project.umbrellaTask(
+    commonHost: KonanTarget,
+    description: String,
+    suffix: String = "",
+    additional: Task.() -> Unit
+) {
     tasks.register("publishForCurrentOs$suffix") {
         group = PublishingPlugin.PUBLISH_TASK_GROUP
         this.description = description
         if (commonHost.isCurrent()) {
             dependsOn("publishCommon$suffix")
         }
+
+        additional()
 
         if (HostManager.hostIsLinux) {
             dependsOn("publishLinux$suffix")
