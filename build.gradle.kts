@@ -1,7 +1,7 @@
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    alias(libs.plugins.gradle.publish.plugin)
+    alias(libs.plugins.gradle.plugin.publish)
     alias(libs.plugins.artifactregistry)
 }
 
