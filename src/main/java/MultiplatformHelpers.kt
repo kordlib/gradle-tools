@@ -56,7 +56,12 @@ fun Project.applyMultiplatformHelpers() {
                 description = "Runs all tests for this OS"
                 if (commonHost.isCurrent()) {
                     dependsOn("testCommon")
-                    dependsOn("apiCheck")
+                    val apiCheckTask = project.tasks.named("apiCheck")
+                    afterEvaluate {
+                        if (apiCheckTask.isPresent) {
+                            dependsOn(apiCheckTask)
+                        }
+                    }
                 }
 
                 if (HostManager.hostIsLinux) {
