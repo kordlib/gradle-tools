@@ -39,7 +39,7 @@ fun Project.applyMultiplatformHelpers() {
             umbrellaTask(commonHost, "Publishes all publications designated to this hosts OS") {
                 if (metadataHost.isCurrent()) {
                     val publicationName = kordExtension.publicationName.get().replaceFirstChar { it.uppercaseChar() }
-                    dependsOn("publishKotlinMultiplatformPublicationTo${publicationName}Repository")
+                    dependOnSafe("publishKotlinMultiplatformPublicationTo${publicationName}Repository")
                 }
             }
             umbrellaTask(
@@ -47,34 +47,37 @@ fun Project.applyMultiplatformHelpers() {
                 "ToMavenLocal"
             ) {
                 if (metadataHost.isCurrent()) {
-                    dependsOn("publishKotlinMultiplatformPublicationToMavenLocal")
+                    dependOnSafe("publishKotlinMultiplatformPublicationToMavenLocal")
                 }
             }
 
             tasks.register("testOnCurrentOS") {
+
                 group = LifecycleBasePlugin.CHECK_TASK_NAME
                 description = "Runs all tests for this OS"
                 if (commonHost.isCurrent()) {
-                    dependsOn("testCommon")
-                    val apiCheckTask = project.tasks.named("apiCheck")
-                    afterEvaluate {
-                        if (apiCheckTask.isPresent) {
-                            dependsOn(apiCheckTask)
-                        }
-                    }
+                    dependOnSafe("testCommon")
+                    dependOnSafe("apiCheck")
                 }
 
                 if (HostManager.hostIsLinux) {
-                    dependsOn("testLinux")
+                    dependOnSafe("testLinux")
                 }
                 if (HostManager.hostIsMingw) {
-                    dependsOn("testWindows")
+                    dependOnSafe("testWindows")
                 }
                 if (HostManager.hostIsMac) {
-                    dependsOn("testApple")
+                    dependOnSafe("testApple")
                 }
             }
         }
+    }
+}
+
+fun Task.dependOnSafe(name: String) {
+    val task = project.tasks.named(name)
+    if (task.isPresent) {
+        dependsOn(task)
     }
 }
 
@@ -89,19 +92,19 @@ private fun Project.umbrellaTask(
         group = PublishingPlugin.PUBLISH_TASK_GROUP
         this.description = description
         if (commonHost.isCurrent()) {
-            dependsOn("publishCommon$suffix")
+            dependOnSafe("publishCommon$suffix")
         }
 
         additional()
 
         if (HostManager.hostIsLinux) {
-            dependsOn("publishLinux$suffix")
+            dependOnSafe("publishLinux$suffix")
         }
         if (HostManager.hostIsMingw) {
-            dependsOn("publishWindows$suffix")
+            dependOnSafe("publishWindows$suffix")
         }
         if (HostManager.hostIsMac) {
-            dependsOn("publishApple$suffix")
+            dependOnSafe("publishApple$suffix")
         }
     }
 }
