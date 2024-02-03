@@ -11,7 +11,7 @@ private val Project.tag
 
 val Project.libraryVersion
     get() = tag ?: run {
-        val prBranch = System.getenv("PR_BRANCH").ifBlank { null }
+        val prBranch = System.getenv("PR_BRANCH")?.ifBlank { null }
         val envBranch = prBranch ?: System.getenv("GIT_BRANCH")?.substringAfter("refs/heads/")
         val snapshotPrefix = when (val branch = envBranch ?: git("branch", "--show-current")) {
             kord.mainBranchName.get() -> providers.gradleProperty("nextPlannedVersion").orNull
