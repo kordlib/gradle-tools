@@ -75,10 +75,7 @@ fun Project.applyMultiplatformHelpers() {
 }
 
 fun Task.dependOnSafe(name: String) {
-    val task = project.tasks.findByName(name)
-    if (task != null) {
-        dependsOn(task)
-    }
+    dependsOn(project.tasks.named { it == name })
 }
 
 context(Project)
