@@ -15,7 +15,6 @@ import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.HostManager
-import org.jetbrains.kotlin.konan.target.KonanTarget
 import kotlin.reflect.KClass
 
 private val darwinFamilies = listOf(
@@ -25,7 +24,7 @@ private val darwinFamilies = listOf(
     Family.WATCHOS
 )
 
-fun Project.applyMultiplatformHelpers() {
+internal fun Project.applyMultiplatformHelpers() {
     val kordExtension = kord
     afterEvaluate {
         with(extensions.getByName<KotlinMultiplatformExtension>("kotlin")) {
@@ -74,13 +73,13 @@ fun Project.applyMultiplatformHelpers() {
     }
 }
 
-fun Task.dependOnSafe(name: String) {
+private fun Task.dependOnSafe(name: String) {
     dependsOn(project.tasks.named { it == name })
 }
 
 context(Project)
 private fun Project.umbrellaTask(
-    commonHost: KonanTarget,
+    commonHost: Family,
     description: String,
     suffix: String = "",
     additional: Task.() -> Unit

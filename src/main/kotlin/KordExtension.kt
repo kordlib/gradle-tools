@@ -4,6 +4,7 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.provider.Property
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
+import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
 interface KordExtension {
@@ -12,7 +13,7 @@ interface KordExtension {
      *
      * Defaults to [KonanTarget.LINUX_X64]
      */
-    val commonHost: Property<KonanTarget>
+    val commonHost: Property<Family>
 
     /**
      * The name of the publication to publish.
@@ -31,11 +32,11 @@ interface KordExtension {
     /**
      * Host to use for metadata publication.
      */
-    val metadataHost: Property<KonanTarget>
+    val metadataHost: Property<Family>
 }
 
 internal fun ExtensionAware.createKordExtension() = extensions.create<KordExtension>("kord").apply {
-    commonHost.convention(KonanTarget.LINUX_X64)
+    commonHost.convention(Family.LINUX)
     metadataHost.convention(commonHost)
     publicationName.convention("maven")
     mainBranchName.convention("main")
