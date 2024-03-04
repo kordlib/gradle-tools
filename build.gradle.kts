@@ -13,7 +13,9 @@ repositories {
 }
 
 kotlin {
+    explicitApi()
     compilerOptions {
+        allWarningsAsErrors = true
         freeCompilerArgs.add("-Xcontext-receivers")
     }
 }
