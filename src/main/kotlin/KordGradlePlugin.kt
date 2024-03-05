@@ -8,6 +8,7 @@ class KordGradlePlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
         createKordExtension()
         applyVersioning()
+        applyCommonSettings()
         if (plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
             applyMultiplatformHelpers()
         }

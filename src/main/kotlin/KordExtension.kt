@@ -4,6 +4,7 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.provider.Property
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
@@ -33,6 +34,17 @@ interface KordExtension {
      * Host to use for metadata publication.
      */
     val metadataHost: Property<Family>
+
+    /**
+     * Whether this host can run Simulators
+     */
+    @Suppress("IdentifierGrammar")
+    val supportsSimulators: Property<Boolean>
+
+    /**
+     * The JVM target used.
+     */
+    val jvmTarget: Property<JvmTarget>
 }
 
 internal fun ExtensionAware.createKordExtension() = extensions.create<KordExtension>("kord").apply {
@@ -40,6 +52,8 @@ internal fun ExtensionAware.createKordExtension() = extensions.create<KordExtens
     metadataHost.convention(commonHost)
     publicationName.convention("maven")
     mainBranchName.convention("main")
+    supportsSimulators.convention(System.getenv("TEAMCITY_VERSION") == null)
+    jvmTarget.convention(JvmTarget.JVM_1_8)
 }
 
 internal val ExtensionAware.kord get() = extensions.getByName<KordExtension>("kord")
