@@ -84,23 +84,25 @@ private fun Project.umbrellaTask(
     suffix: String = "",
     additional: Task.() -> Unit
 ) {
-    tasks.register("publishForCurrentOs$suffix") {
-        group = PublishingPlugin.PUBLISH_TASK_GROUP
-        this.description = description
-        if (commonHost.isCurrent()) {
-            dependOnSafe("publishCommon$suffix")
-        }
+    if (plugins.hasPlugin("org.gradle.maven-publish")) {
+        tasks.register("publishForCurrentOs$suffix") {
+            group = PublishingPlugin.PUBLISH_TASK_GROUP
+            this.description = description
+            if (commonHost.isCurrent()) {
+                dependOnSafe("publishCommon$suffix")
+            }
 
-        additional()
+            additional()
 
-        if (HostManager.hostIsLinux) {
-            dependOnSafe("publishLinux$suffix")
-        }
-        if (HostManager.hostIsMingw) {
-            dependOnSafe("publishWindows$suffix")
-        }
-        if (HostManager.hostIsMac) {
-            dependOnSafe("publishApple$suffix")
+            if (HostManager.hostIsLinux) {
+                dependOnSafe("publishLinux$suffix")
+            }
+            if (HostManager.hostIsMingw) {
+                dependOnSafe("publishWindows$suffix")
+            }
+            if (HostManager.hostIsMac) {
+                dependOnSafe("publishApple$suffix")
+            }
         }
     }
 }
@@ -128,7 +130,7 @@ private fun KotlinMultiplatformExtension.publishAndTestTasks(
         .map { if (it == "Metadata") "KotlinMultiplatform" else it }
         .toList()
     val publication = project.kord.publicationName.get().replaceFirstChar { it.uppercaseChar() }
-    if (targetNames.isNotEmpty()) {
+    if (targetNames.isNotEmpty() && plugins.hasPlugin("org.gradle.maven-publish")) {
         tasks.register("publish$name") {
             description = "Publishes all $name targets"
             group = PublishingPlugin.PUBLISH_TASK_GROUP
