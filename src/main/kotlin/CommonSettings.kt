@@ -39,7 +39,9 @@ fun Project.applyCommonSettings() {
         }
 
         tasks.withType<KotlinNativeSimulatorTest>().configureEach {
-            enabled = kord.supportsSimulators.get()
+            afterEvaluate {
+                enabled = kord.supportsSimulators.get()
+            }
         }
     }
 }
