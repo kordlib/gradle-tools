@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "dev.kord"
-version = "1.5.1"
+version = "1.5.2"
 
 repositories {
     mavenCentral()
