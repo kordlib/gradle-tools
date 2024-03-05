@@ -35,7 +35,7 @@ internal fun Project.applyMultiplatformHelpers() {
 
             val commonHost = kordExtension.commonHost.get()
             val metadataHost = kordExtension.metadataHost.get()
-            umbrellaTask(commonHost, "Publishes all publications designated to this hosts OS") {
+            umbrellaTask(commonHost, "Publishes all publications designated to this host's OS") {
                 if (metadataHost.isCurrent()) {
                     val publicationName = kordExtension.publicationName.get().replaceFirstChar { it.uppercaseChar() }
                     dependOnSafe("publishKotlinMultiplatformPublicationTo${publicationName}Repository")

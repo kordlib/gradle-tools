@@ -9,7 +9,7 @@ private val Project.tag
         ?.lines()
         ?.single()
 
-val Project.libraryVersion
+public val Project.libraryVersion: String
     get() = tag ?: run {
         val prBranch = System.getenv("PR_BRANCH")?.ifBlank { null }
         val envBranch = prBranch ?: System.getenv("GIT_BRANCH")?.substringAfter("refs/heads/")
@@ -22,7 +22,7 @@ val Project.libraryVersion
         "$snapshotPrefix-SNAPSHOT"
     }.also { logger.lifecycle("Version set to: $it") }
 
-val Project.commitHash get() = git("rev-parse", "--verify", "HEAD")
-val Project.shortCommitHash get() = git("rev-parse", "--short", "HEAD")
+public val Project.commitHash: String get() = git("rev-parse", "--verify", "HEAD")
+public val Project.shortCommitHash: String get() = git("rev-parse", "--short", "HEAD")
 
-val Project.isRelease get() = tag != null
+public val Project.isRelease: Boolean get() = tag != null
