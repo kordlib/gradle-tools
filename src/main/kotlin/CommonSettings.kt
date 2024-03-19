@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 
-fun Project.applyCommonSettings() {
+internal fun Project.applyCommonSettings() {
     if (plugins.hasPlugin("org.gradle.java")) {
         configure<JavaPluginExtension> {
             afterEvaluate {
