@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
@@ -16,8 +18,13 @@ kotlin {
     explicitApi()
     compilerOptions {
         allWarningsAsErrors = true
-        freeCompilerArgs.add("-Xcontext-receivers")
+        jvmTarget = JVM_1_8
+        freeCompilerArgs.addAll("-Xjdk-release=1.8", "-Xcontext-receivers")
     }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 8
 }
 
 dependencies {
