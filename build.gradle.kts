@@ -1,14 +1,13 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
 
 plugins {
-    `java-gradle-plugin`
     `kotlin-dsl`
     alias(libs.plugins.gradle.plugin.publish)
     alias(libs.plugins.artifactregistry)
 }
 
 group = "dev.kord"
-version = "1.5.3"
+version = "1.6.0"
 
 repositories {
     mavenCentral()

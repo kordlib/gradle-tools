@@ -24,6 +24,22 @@ private val darwinFamilies = listOf(
     Family.WATCHOS
 )
 
+internal fun Project.applyJvmHelpers() {
+    tasks.apply {
+        task("publishForCurrentOs") {
+            dependsOn("publish")
+        }
+
+        task("publishForCurrentOsToMavenLocal") {
+            dependsOn("publishToMavenLocal")
+        }
+
+        task("testOnCurrentOS") {
+            dependsOn("test")
+        }
+    }
+}
+
 internal fun Project.applyMultiplatformHelpers() {
     val kordExtension = kord
     afterEvaluate {
@@ -51,9 +67,9 @@ internal fun Project.applyMultiplatformHelpers() {
             }
 
             tasks.register("testOnCurrentOS") {
-
                 group = LifecycleBasePlugin.VERIFICATION_GROUP
                 description = "Runs all tests for this OS"
+
                 if (commonHost.isCurrent()) {
                     dependOnSafe("testCommon")
                     dependOnSafe("apiCheck")

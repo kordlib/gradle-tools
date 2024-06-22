@@ -10,6 +10,8 @@ public class KordGradlePlugin : Plugin<Project> {
         applyCommonSettings()
         if (plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
             applyMultiplatformHelpers()
+        } else if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
+            applyJvmHelpers()
         }
     }
 }
