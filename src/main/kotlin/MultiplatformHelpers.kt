@@ -38,7 +38,9 @@ internal fun Project.applyJvmHelpers() {
         }
 
         register("testOnCurrentOS") {
-            dependsOn("test")
+            if (kord.commonHost.get().isCurrent()) {
+                dependsOn("test")
+            }
         }
     }
 }
