@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.publish.plugins.PublishingPlugin
 import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.invoke
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
@@ -25,16 +26,18 @@ private val darwinFamilies = listOf(
 )
 
 internal fun Project.applyJvmHelpers() {
-    tasks.apply {
-        task("publishForCurrentOs") {
-            dependsOn("publish")
+    tasks {
+        register("publishForCurrentOs") {
+            if (kord.commonHost.get().isCurrent()) {
+                dependsOn("publish")
+            }
         }
 
-        task("publishForCurrentOsToMavenLocal") {
+        register("publishForCurrentOsToMavenLocal") {
             dependsOn("publishToMavenLocal")
         }
 
-        task("testOnCurrentOS") {
+        register("testOnCurrentOS") {
             dependsOn("test")
         }
     }
