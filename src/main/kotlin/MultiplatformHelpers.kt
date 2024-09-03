@@ -31,7 +31,7 @@ internal fun Project.applyJvmHelpers() {
     tasks {
         if (plugins.hasPlugin(MavenPublishPlugin::class)) {
             register("publishForCurrentOs") {
-                if (kord.commonHost.get().isCurrent()) {
+                if (project.kord.commonHost.get().isCurrent()) {
                     dependsOn("publish")
                 }
             }
