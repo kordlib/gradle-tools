@@ -33,7 +33,7 @@ internal fun Project.applyCommonSettings() {
                 compilations.all {
                     compileTaskProvider.configure {
                         compilerOptions {
-                            jvmTarget = kord.jvmTarget
+                            jvmTarget = project.kord.jvmTarget
                         }
                     }
                 }
