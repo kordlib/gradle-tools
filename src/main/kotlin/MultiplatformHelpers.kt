@@ -9,11 +9,12 @@ import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.hasPlugin
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.language.base.plugins.LifecycleBasePlugin
+import org.jetbrains.kotlin.gradle.ExternalKotlinTargetApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.external.project
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.konan.target.Family
@@ -53,7 +54,7 @@ internal fun Project.applyMultiplatformHelpers() {
     val kordExtension = kord
     afterEvaluate {
         with(extensions.getByName<KotlinMultiplatformExtension>("kotlin")) {
-            publishAndTestTasks("Common", KotlinJvmTarget::class, KotlinJsTarget::class, KotlinJsIrTarget::class)
+            publishAndTestTasks("Common", KotlinJvmTarget::class, KotlinJsIrTarget::class)
             publishAndTestTasks<KotlinNativeTarget>("Linux") { konanTarget.family == Family.LINUX }
             publishAndTestTasks<KotlinNativeTarget>("Windows") { konanTarget.family == Family.MINGW }
             publishAndTestTasks<KotlinNativeTarget>("Apple") { konanTarget.family in darwinFamilies }
@@ -102,7 +103,6 @@ private fun Task.dependOnSafe(name: String) {
     dependsOn(project.tasks.named { it == name })
 }
 
-context(Project)
 private fun Project.umbrellaTask(
     commonHost: Family,
     description: String,
@@ -132,7 +132,6 @@ private fun Project.umbrellaTask(
     }
 }
 
-context(Project)
 private inline fun <reified T : KotlinTarget> KotlinMultiplatformExtension.publishAndTestTasks(
     name: String,
     crossinline filter: T.() -> Boolean
@@ -140,12 +139,12 @@ private inline fun <reified T : KotlinTarget> KotlinMultiplatformExtension.publi
     (this as T).filter()
 }
 
-context(Project)
+@OptIn(ExternalKotlinTargetApi::class)
 private fun KotlinMultiplatformExtension.publishAndTestTasks(
     name: String,
     vararg desiredTargets: KClass<out KotlinTarget>,
     filter: KotlinTarget.() -> Boolean = { true }
-) {
+) = with(project) {
     val targetNames = targets
         .asSequence()
         .filter { target -> desiredTargets.any { it.isInstance(target) } }

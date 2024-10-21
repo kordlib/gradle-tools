@@ -31,8 +31,10 @@ internal fun Project.applyCommonSettings() {
         configure<KotlinMultiplatformExtension> {
             targets.withType<KotlinJvmTarget>().configureEach {
                 compilations.all {
-                    compilerOptions.configure {
-                        jvmTarget = kord.jvmTarget
+                    compileTaskProvider.configure {
+                        compilerOptions {
+                            jvmTarget = kord.jvmTarget
+                        }
                     }
                 }
             }
