@@ -5,11 +5,11 @@ import java.io.ByteArrayOutputStream
 
 internal fun Project.git(vararg command: String): String {
     val output = ByteArrayOutputStream()
-    exec {
+    providers.exec {
         commandLine("git", *command)
         standardOutput = output
         errorOutput = output
         workingDir = rootDir
-    }.rethrowFailure().assertNormalExitValue()
+    }.result.get().rethrowFailure().assertNormalExitValue()
     return output.toString().trim()
 }
