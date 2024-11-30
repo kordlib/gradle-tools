@@ -9,12 +9,10 @@ import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.hasPlugin
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.language.base.plugins.LifecycleBasePlugin
-import org.jetbrains.kotlin.gradle.ExternalKotlinTargetApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.external.project
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.konan.target.Family
@@ -139,7 +137,6 @@ private inline fun <reified T : KotlinTarget> KotlinMultiplatformExtension.publi
     (this as T).filter()
 }
 
-@OptIn(ExternalKotlinTargetApi::class)
 private fun KotlinMultiplatformExtension.publishAndTestTasks(
     name: String,
     vararg desiredTargets: KClass<out KotlinTarget>,
