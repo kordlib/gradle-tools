@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "dev.kord"
-version = "1.9.0"
+version = "1.9.1"
 
 repositories {
     mavenCentral()
