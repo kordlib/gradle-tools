@@ -1,5 +1,6 @@
 package dev.kord.gradle.tools
 
+import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.provider.Property
 import org.gradle.kotlin.dsl.create
@@ -55,4 +56,4 @@ internal fun ExtensionAware.createKordExtension() = extensions.create<KordExtens
     jvmTarget.convention(JvmTarget.JVM_1_8)
 }
 
-internal val ExtensionAware.kord get() = extensions.getByName<KordExtension>("kord")
+internal val Project.kord get() = extensions.getByName<KordExtension>("kord")
