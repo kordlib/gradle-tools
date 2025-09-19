@@ -18,7 +18,7 @@ kotlin {
     compilerOptions {
         allWarningsAsErrors = true
         jvmTarget = JVM_1_8
-        freeCompilerArgs.addAll("-Xjdk-release=1.8", "-Xcontext-receivers")
+        freeCompilerArgs.addAll("-Xjdk-release=1.8", "-Xcontext-parameters")
     }
 }
 
