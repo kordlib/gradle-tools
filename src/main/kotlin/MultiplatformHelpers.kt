@@ -6,6 +6,7 @@ import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.api.publish.plugins.PublishingPlugin
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.hasPlugin
 import org.gradle.kotlin.dsl.invoke
@@ -152,8 +153,9 @@ private fun KotlinMultiplatformExtension.publishAndTestTasks(
         .map { if (it == "Metadata") "KotlinMultiplatform" else it }
         .toList()
 
-    val repositoryNames = project.the<PublishingExtension>().repositories.names
-        .map { it.replaceFirstChar { char -> char.uppercaseChar() } }
+    val repositoryNames = project.extensions.findByType<PublishingExtension>()?.repositories?.names
+        ?.map { it.replaceFirstChar { char -> char.uppercaseChar() } }
+        ?: emptyList()
 
     if (targetNames.isNotEmpty() && plugins.hasPlugin("org.gradle.maven-publish")) {
         tasks.register("publish$name") {
