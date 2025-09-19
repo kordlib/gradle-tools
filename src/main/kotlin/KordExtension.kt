@@ -43,7 +43,6 @@ public interface KordExtension {
 internal fun ExtensionAware.createKordExtension() = extensions.create<KordExtension>("kord").apply {
     commonHost.convention(Family.LINUX)
     metadataHost.convention(commonHost)
-    publicationName.convention("maven")
     mainBranchName.convention("main")
     supportsSimulators.convention(System.getenv("TEAMCITY_VERSION") == null)
     jvmTarget.convention(JvmTarget.JVM_1_8)
