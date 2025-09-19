@@ -3,11 +3,13 @@ package dev.kord.gradle.tools
 import dev.kord.gradle.tools.util.isCurrent
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.api.publish.plugins.PublishingPlugin
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.hasPlugin
 import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.the
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
@@ -61,8 +63,7 @@ internal fun Project.applyMultiplatformHelpers() {
             val metadataHost = kordExtension.metadataHost.get()
             umbrellaTask(commonHost, "Publishes all publications designated to this host's OS") {
                 if (metadataHost.isCurrent()) {
-                    val publicationName = kordExtension.publicationName.get().replaceFirstChar { it.uppercaseChar() }
-                    dependOnSafe("publishKotlinMultiplatformPublicationTo${publicationName}Repository")
+                    dependOnSafe("publishKotlinMultiplatformPublicationToMavenRepository")
                 }
             }
             umbrellaTask(
@@ -150,12 +151,17 @@ private fun KotlinMultiplatformExtension.publishAndTestTasks(
         .map { targetName -> targetName.replaceFirstChar { it.uppercaseChar() } }
         .map { if (it == "Metadata") "KotlinMultiplatform" else it }
         .toList()
-    val publication = project.kord.publicationName.get().replaceFirstChar { it.uppercaseChar() }
+
+    val repositoryNames = project.the<PublishingExtension>().repositories.names
+        .map { it.replaceFirstChar { char -> char.uppercaseChar() } }
+
     if (targetNames.isNotEmpty() && plugins.hasPlugin("org.gradle.maven-publish")) {
         tasks.register("publish$name") {
             description = "Publishes all $name targets"
             group = PublishingPlugin.PUBLISH_TASK_GROUP
-            dependsOn(targetNames.map { "publish${it}PublicationTo${publication}Repository" })
+            dependsOn(targetNames.flatMap {
+                repositoryNames.map { repositoryName -> "publish${it}PublicationTo${repositoryName}Repository" }
+            })
         }
         tasks.register("publish${name}ToMavenLocal") {
             description = "Publishes all $name targets to Maven local"

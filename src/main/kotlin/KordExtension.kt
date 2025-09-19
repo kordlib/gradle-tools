@@ -17,13 +17,6 @@ public interface KordExtension {
     public val commonHost: Property<Family>
 
     /**
-     * The name of the publication to publish.
-     *
-     * Defaults to `maven`
-     */
-    public val publicationName: Property<String>
-
-    /**
      * The main development branch of the projects.
      *
      * Defaults to `main`
