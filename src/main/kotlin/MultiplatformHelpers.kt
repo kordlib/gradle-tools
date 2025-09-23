@@ -10,11 +10,11 @@ import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.hasPlugin
 import org.gradle.kotlin.dsl.invoke
-import org.gradle.kotlin.dsl.the
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMetadataTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
@@ -55,7 +55,7 @@ internal fun Project.applyMultiplatformHelpers() {
     val kordExtension = kord
     afterEvaluate {
         with(extensions.getByName<KotlinMultiplatformExtension>("kotlin")) {
-            publishAndTestTasks("Common", KotlinJvmTarget::class, KotlinJsIrTarget::class)
+            publishAndTestTasks("Common", KotlinJvmTarget::class, KotlinJsIrTarget::class, KotlinMetadataTarget::class)
             publishAndTestTasks<KotlinNativeTarget>("Linux") { konanTarget.family == Family.LINUX }
             publishAndTestTasks<KotlinNativeTarget>("Windows") { konanTarget.family == Family.MINGW }
             publishAndTestTasks<KotlinNativeTarget>("Apple") { konanTarget.family in darwinFamilies }

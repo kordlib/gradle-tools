@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "dev.kord"
-version = "1.10.1-SNAPSHOT"
+version = "1.10.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
